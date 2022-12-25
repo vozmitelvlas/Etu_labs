@@ -25,8 +25,6 @@ void Controller::start(){
     }
     this->field = generator->fill(height, width, this->log_out_info, this->player);
     move();
-    Message message(STATUS, "The game has started", log_out_info);
-    notify(message);
 }
 
 void Controller::move(){
@@ -76,11 +74,16 @@ void Controller::move(){
                     break;
                 }
                 catch(SaveExp& se){
-                    throw SaveExp(se.what());        
+                    Message message(GAME, "could not save game", log_out_info);
+                    notify(message);      
+                }
+                catch(FileExp& fe){
+                    Message message(GAME, fe.what(), log_out_info);
+                    notify(message);
                 }
                 catch(...){
-                    Message message3(GAME, "unknown error restore gamer", log_out_info);
-                    notify(message3);
+                    Message message(GAME, "unknown error restore gamer", log_out_info);
+                    notify(message);
                 }
             }
 
@@ -97,22 +100,25 @@ void Controller::move(){
                 try{
                     this->player = this->Splayer->load_data_player(player);
                     this->field = this->Sfield->load_data_field(player, this->log_out_info);
+
                 }
                 catch(LoadExp& se){
-                    throw LoadExp(se.what());
+                    Message message(GAME, se.what(), log_out_info);
+                    notify(message);
                 }
                 catch(FileExp& fe){
-                    throw FileExp("File was changed!");
+                    system("clear");
+                    Message message(GAME, fe.what(), log_out_info);
+                    notify(message);
                 }
                 catch(...){
-                    Message message4(GAME, "unknown error", log_out_info);
-                    notify(message4);
+                    Message message(GAME, "unknown error", log_out_info);
+                    notify(message);
                 }
 
                 this->field->print();
             }
             else{
-
                 system("clear");
                 this->field->print();
                 break;
@@ -123,7 +129,6 @@ void Controller::move(){
         default:
             break;
         }
-
         move = read->read_move();  
     }
     if(field->get_end()){

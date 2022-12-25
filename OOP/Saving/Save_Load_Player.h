@@ -18,5 +18,5 @@ private:
 
     std::ofstream file_input;
     std::ifstream file_output;
-    std::string filepath = "Splayer.txt";
+    std::string filepath = "SAVE.txt";
 };

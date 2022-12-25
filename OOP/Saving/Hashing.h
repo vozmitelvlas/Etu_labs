@@ -2,6 +2,7 @@
 #include "fstream"
 #include <iostream>
 #include "../Exceptions/FileExp.h"
+#include "../Exceptions/LoadExp.h"
 
 class Hash{
 private:
@@ -15,7 +16,7 @@ public:
         file.open(path, std::ios_base::in);
 
         if(!file.is_open()){
-            throw FileExp("Could not open file [ " + path + " ]");
+            throw FileExp("Could not open file [" + path + "]");
         }
 
         char c; 
@@ -48,6 +49,9 @@ public:
         while(c != '#'){
             hash_sum += hash(c);
             file.get(c);
+            if(file.eof() || file.fail()){
+                throw LoadExp("File [" + path + "] was changed!");
+            }
         }
         int old_hash;
         file >> old_hash;

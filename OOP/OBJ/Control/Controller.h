@@ -31,6 +31,7 @@ public:
     void move();
     void start();
 
+
 private:
     PrintField* field;
     Player* player;
