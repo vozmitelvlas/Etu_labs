@@ -51,6 +51,8 @@ public:
     int get_height();
     int get_length();
 
+    void set_player(Player* player);
+
     std::vector<std::vector<Cell>>* get_field();
 
     bool get_end();

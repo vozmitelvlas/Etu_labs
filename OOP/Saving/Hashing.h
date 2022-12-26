@@ -58,7 +58,7 @@ public:
         if(old_hash != hash_sum){
             return -1;
         }
-
+        file.close();
         return 0;
     }
 };

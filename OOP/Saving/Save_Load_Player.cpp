@@ -9,7 +9,6 @@ void SavePlayer::save_data_player(Player* player){
         throw FileExp("Could not open file [" + filepath + "] for save state");
     }
 
-    
     file_input << player->get_hp() << '\n';
     file_input << player->get_cache() << '\n';
     file_input << player->get_armor() << '\n';
@@ -23,14 +22,16 @@ void SavePlayer::save_data_player(Player* player){
 }
 
 Player* SavePlayer::load_data_player(Player* player){
-    if(check_hash(filepath) == -1){
-        throw LoadExp("File [" + filepath + "] was changed!");
-    }
 
-    file_output.open(filepath, std::fstream::in);
+    file_output.open(filepath, std::ios_base::in);
     if(!file_output.is_open()){
         throw FileExp("Could not open file [" + filepath + "] for save state");
     }
+
+    if (file_output.peek() == EOF){
+        file_output.close();
+        throw LoadExp("File [" + filepath + "] empty!");
+    } 
 
     int hp, cache, armor, x, y;
     file_output >> hp;
@@ -39,8 +40,10 @@ Player* SavePlayer::load_data_player(Player* player){
     file_output >> x;
     file_output >> y;
 
-    if( hp <= 0 || hp > 200 || cache < 0 || armor < 0 || x < 0 || y < 0){
-        throw LoadExp("Incorrect values in file, file was changed!");
+
+    if( hp <= 0 || hp > 200 || cache < 0  || armor < 0 || x < 0 || y < 0){
+        file_output.close();
+        throw LoadExp("Incorrect player's values in file, file was changed!");
     }
 
     player->set_hp(hp);

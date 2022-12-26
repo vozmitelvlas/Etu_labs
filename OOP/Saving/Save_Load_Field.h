@@ -13,6 +13,8 @@
 #include "../Exceptions/LoadExp.h"
 #include "../Exceptions/SaveExp.h"
 
+#include "../Logging/Subject.h"
+
 
 class SaveField: public Hash{
 public:

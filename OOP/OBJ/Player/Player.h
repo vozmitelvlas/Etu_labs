@@ -29,4 +29,8 @@ public:
     
     void set_end(bool end);
     bool get_end();
+
+    void set_y(int y);
+    void set_x(int x);
+    
 };

@@ -39,3 +39,11 @@ void Player::set_end(bool end){
 bool Player::get_end(){
     return end;
 }
+
+void Player::set_y(int y){
+    this->y = y;
+}
+void Player::set_x(int x){
+    this->x = x;
+}
+

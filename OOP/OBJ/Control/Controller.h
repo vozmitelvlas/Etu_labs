@@ -31,8 +31,10 @@ public:
     void move();
     void start();
 
+    Player* copy(Player* player1, Player* player2);
 
 private:
+    Player* cplayer;
     PrintField* field;
     Player* player;
     DIF difficulty;

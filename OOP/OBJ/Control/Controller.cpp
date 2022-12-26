@@ -3,6 +3,7 @@
 
 Controller::Controller(InfoLog *log_out_info, CommandReader* read, DIF difficulty, int width, int height){
     this->player = new Player(200, 50, 0, 0, 0);
+    this->cplayer = new Player(200, 50, 0, 0, 0);
     this->height = height;
     this->width = width;
     this->difficulty = difficulty;
@@ -93,17 +94,20 @@ void Controller::move(){
                 break;
             }
         case MOVES::LOAD:
+            this->cplayer = copy(this->cplayer, this->player);
+            std::cout<< '('<< this->cplayer->get_hp() << ',' << this->player->get_hp() <<')';
             std::cout << "Are u sure u want to load the last save game?(Y/N): "; std::cin >> answer;
             if (answer == 'Y'){
                 system("clear");
-
                 try{
-                    this->player = this->Splayer->load_data_player(player);
-                    this->field = this->Sfield->load_data_field(player, this->log_out_info);
+                    this->player = this->Splayer->load_data_player(this->player);
+                    this->field = this->Sfield->load_data_field(this->player, this->log_out_info);
 
                 }
-                catch(LoadExp& se){
-                    Message message(GAME, se.what(), log_out_info);
+                catch(LoadExp& le){
+                    this->player = copy(this->player, this->cplayer);
+                    this->field->set_player(this->player);
+                    Message message(GAME, le.what(), log_out_info);
                     notify(message);
                 }
                 catch(FileExp& fe){
@@ -115,7 +119,6 @@ void Controller::move(){
                     Message message(GAME, "unknown error", log_out_info);
                     notify(message);
                 }
-
                 this->field->print();
             }
             else{
@@ -135,4 +138,15 @@ void Controller::move(){
         Message message3(STATUS, "Game over\n", log_out_info);
         notify(message3);
     }
+}
+
+
+Player* Controller::copy(Player* player1, Player* player2){
+    player1->set_hp(player2->get_hp());
+    player1->set_armor(player2->get_armor());
+    player1->set_cache(player2->get_cache());
+    player1->set_x(player2->get_x());
+    player1->set_y(player2->get_y());
+
+    return player1;
 }

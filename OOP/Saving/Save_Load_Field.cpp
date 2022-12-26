@@ -47,10 +47,6 @@ void SaveField::save_data_field(Field *field){
 }
 
 PrintField* SaveField::load_data_field(Player* player,  InfoLog* log_out_info){
-   
-    if(check_hash(filepath) == -1){
-        throw LoadExp("File [" + filepath + "] was changed!");
-    }
 
     file_output.open(filepath, std::fstream::in);
     if(!file_output.is_open()){
@@ -65,13 +61,27 @@ PrintField* SaveField::load_data_field(Player* player,  InfoLog* log_out_info){
     while(c != '$'){
         file_output >> c;
         if(file_output.eof() || file_output.fail()){
+            file_output.close();
             throw LoadExp("File [" + filepath + "] was changed!");
         }
     }
     file_output >> width;
     file_output >> height;
+
     if( height <= 0 || width <= 0 ){
-        throw LoadExp("Incorrect values in file, file was changed!");
+        file_output.close();
+        throw LoadExp("Incorrect values for field's size in file, file was changed!");
+    }
+    
+
+    if (player->get_x() > width || player->get_x() < 0 || player->get_y() > height || player->get_y() < 0){
+        file_output.close();
+        throw LoadExp("Incorrect values for player's position, file was changed!");
+    }
+
+    if(check_hash(filepath) == -1){
+        file_output.close();
+        throw LoadExp("File [" + filepath + "] was changed!");
     }
 
 

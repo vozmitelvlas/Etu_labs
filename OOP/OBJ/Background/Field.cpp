@@ -235,3 +235,7 @@ bool Field::get_end(){
 InfoLog* Field::get_info(){
     return this->log_out_info;
 }
+
+void Field::set_player(Player* player){
+    this->player = player;
+}
