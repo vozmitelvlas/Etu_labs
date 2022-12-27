@@ -69,10 +69,13 @@ void Controller::move(){
             char answer;
             std::cout << "Are u sure u want to save and quit the current game?(Y/N): "; std::cin >> answer;
             if (answer == 'Y'){
+                system("clear");
                 try{
                     this->Splayer->save_data_player(player);
                     this->Sfield->save_data_field(field);
-                    break;
+                    
+                    Message message(GAME, "The download was successful!", log_out_info);
+                    notify(message);
                 }
                 catch(SaveExp& se){
                     Message message(GAME, "could not save game", log_out_info);
@@ -87,21 +90,25 @@ void Controller::move(){
                     notify(message);
                 }
             }
-
             else{
                 system("clear");
                 this->field->print();
                 break;
             }
+            this->field->print();
+            break;
         case MOVES::LOAD:
             this->cplayer = copy(this->cplayer, this->player);
-            std::cout<< '('<< this->cplayer->get_hp() << ',' << this->player->get_hp() <<')';
             std::cout << "Are u sure u want to load the last save game?(Y/N): "; std::cin >> answer;
+
             if (answer == 'Y'){
                 system("clear");
                 try{
                     this->player = this->Splayer->load_data_player(this->player);
                     this->field = this->Sfield->load_data_field(this->player, this->log_out_info);
+
+                    Message message(GAME, "The data has been successfully uploaded!", log_out_info);
+                    notify(message);
 
                 }
                 catch(LoadExp& le){
